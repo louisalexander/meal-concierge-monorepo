@@ -11,6 +11,9 @@
 
   <name>Archetype - meal-concierge-monorepo</name>
 
+  <modules>
+    <module> chat-service</module>
+  </modules>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
 
