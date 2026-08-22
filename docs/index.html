@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meal Concierge — an AI concierge for what you eat</title>
+<meta name="description" content="Meal Concierge is a microservice monorepo for an AI meal assistant that answers questions grounded in documents you control — not in what a language model happens to remember.">
+<meta property="og:title" content="Meal Concierge">
+<meta property="og:description" content="An AI concierge for what you eat — grounded in your documents, not the model's memory.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍲</text></svg>">
+<style>
+  :root {
+    --bg: #fbf7f1;
+    --bg-raised: #ffffff;
+    --bg-sunken: #f3ece3;
+    --border: #e6dccf;
+    --text: #2a2320;
+    --text-dim: #6b5f57;
+    --accent: #b4531f;
+    --accent-soft: #f6e4d6;
+    --code-bg: #2c2622;
+    --code-text: #f0e7dd;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17130f;
+      --bg-raised: #211b16;
+      --bg-sunken: #1c1712;
+      --border: #362c24;
+      --text: #f0e9e2;
+      --text-dim: #a9998c;
+      --accent: #f0925a;
+      --accent-soft: #33231a;
+      --code-bg: #0f0c0a;
+      --code-text: #ede2d7;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.65 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+  a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+
+  /* ---- hero ---- */
+  header.hero {
+    padding: 88px 0 64px;
+    border-bottom: 1px solid var(--border);
+    background:
+      radial-gradient(900px 380px at 12% -10%, var(--accent-soft), transparent 65%);
+  }
+  .eyebrow {
+    font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--accent); font-weight: 650; margin: 0 0 18px;
+  }
+  h1 {
+    font-size: clamp(2.4rem, 6.5vw, 3.6rem);
+    line-height: 1.05; letter-spacing: -0.03em;
+    margin: 0 0 20px; font-weight: 700;
+  }
+  .lede { font-size: clamp(1.06rem, 2.4vw, 1.24rem); color: var(--text-dim); max-width: 60ch; margin: 0 0 32px; }
+  .lede strong { color: var(--text); font-weight: 600; }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; }
+  .btn {
+    display: inline-block; padding: 11px 20px; border-radius: 8px;
+    font-size: 15px; font-weight: 600; text-decoration: none;
+    border: 1px solid var(--border); color: var(--text); background: var(--bg-raised);
+  }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn:hover { filter: brightness(1.05); }
+
+  /* ---- sections ---- */
+  section { padding: 60px 0; border-bottom: 1px solid var(--border); }
+  section:last-of-type { border-bottom: 0; }
+  h2 {
+    font-size: 1.55rem; letter-spacing: -0.02em; margin: 0 0 8px; font-weight: 680;
+  }
+  h2 + .sub { color: var(--text-dim); margin: 0 0 28px; max-width: 62ch; }
+  h3 { font-size: 1.02rem; margin: 0 0 6px; font-weight: 650; }
+  p { max-width: 66ch; }
+
+  /* ---- pipeline ---- */
+  ol.pipeline { list-style: none; counter-reset: step; padding: 0; margin: 0; display: grid; gap: 2px; }
+  ol.pipeline li {
+    counter-increment: step;
+    background: var(--bg-raised); border: 1px solid var(--border);
+    padding: 16px 18px 16px 56px; position: relative;
+  }
+  ol.pipeline li:first-child { border-radius: 10px 10px 0 0; }
+  ol.pipeline li:last-child { border-radius: 0 0 10px 10px; }
+  ol.pipeline li::before {
+    content: counter(step);
+    position: absolute; left: 16px; top: 16px;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--accent-soft); color: var(--accent);
+    display: grid; place-items: center;
+    font-size: 13px; font-weight: 700;
+  }
+  ol.pipeline p { margin: 0; color: var(--text-dim); font-size: 15px; }
+
+  /* ---- cards ---- */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
+  .card {
+    background: var(--bg-raised); border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px;
+  }
+  .card p { margin: 0; color: var(--text-dim); font-size: 15px; }
+
+  /* ---- service block ---- */
+  .service { background: var(--bg-raised); border: 1px solid var(--border); border-radius: 10px; padding: 22px 24px; }
+  .service-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; margin-bottom: 4px; }
+  .service-head h3 { margin: 0; }
+  .tag {
+    font-size: 11px; letter-spacing: .06em; text-transform: uppercase; font-weight: 700;
+    padding: 3px 8px; border-radius: 20px;
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .path { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; color: var(--text-dim); }
+
+  /* ---- code ---- */
+  pre {
+    background: var(--code-bg); color: var(--code-text);
+    padding: 16px 18px; border-radius: 10px;
+    overflow-x: auto; font-size: 13.5px; line-height: 1.6;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.9em; }
+  p code, li code, td code {
+    background: var(--bg-sunken); border: 1px solid var(--border);
+    padding: 1px 5px; border-radius: 4px;
+  }
+  pre code { background: none; border: 0; padding: 0; }
+
+  /* ---- stack table ---- */
+  .table-scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; min-width: 460px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { font-size: 12px; letter-spacing: .07em; text-transform: uppercase; color: var(--text-dim); font-weight: 650; }
+  td:first-child { white-space: nowrap; font-weight: 600; }
+  tr:last-child td { border-bottom: 0; }
+
+  /* ---- roadmap ---- */
+  ul.roadmap { list-style: none; padding: 0; margin: 0; }
+  ul.roadmap li { padding: 9px 0 9px 30px; position: relative; border-bottom: 1px solid var(--border); color: var(--text-dim); }
+  ul.roadmap li:last-child { border-bottom: 0; }
+  ul.roadmap li::before {
+    position: absolute; left: 2px; top: 9px; font-size: 14px;
+  }
+  ul.roadmap li.done { color: var(--text); }
+  ul.roadmap li.done::before { content: "●"; color: var(--accent); }
+  ul.roadmap li.next::before { content: "○"; color: var(--text-dim); }
+
+  .note {
+    border-left: 3px solid var(--accent);
+    background: var(--bg-sunken);
+    padding: 14px 18px; border-radius: 0 8px 8px 0;
+    font-size: 15px; color: var(--text-dim);
+  }
+  .note strong { color: var(--text); }
+
+  footer {
+    padding: 40px 0 64px; color: var(--text-dim); font-size: 14px;
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Meal Concierge</p>
+    <h1>An AI concierge for what you eat.</h1>
+    <p class="lede">
+      Meal Concierge is a microservice monorepo for a conversational meal assistant — one that
+      plans, substitutes, scales and explains, and answers <strong>from documents you control</strong>
+      rather than from whatever a language model happens to remember.
+    </p>
+    <div class="cta">
+      <a class="btn primary" href="https://github.com/louisalexander/meal-concierge-monorepo">View on GitHub</a>
+      <a class="btn" href="#how">How it works</a>
+    </div>
+  </div>
+</header>
+
+<section id="about">
+  <div class="wrap">
+    <h2>About</h2>
+    <p class="sub">Why a concierge, and why grounded retrieval instead of a plain chatbot.</p>
+
+    <p>
+      Food questions look casual and are anything but. <em>Can I swap buttermilk for yogurt here?</em>
+      <em>Is this safe with a tree-nut allergy?</em> <em>What do I cook with what's left in the fridge?</em>
+      Each one depends on a specific recipe, a specific pantry, a specific person — and getting it
+      subtly wrong ranges from a ruined dinner to a genuine medical problem.
+    </p>
+    <p>
+      A general-purpose chatbot answers those questions fluently and, often enough, incorrectly.
+      It has no idea which recipe you are holding, and it cannot cite where an answer came from.
+      Meal Concierge takes the opposite approach: every answer is retrieved from a corpus you
+      curate — your recipes, your nutrition references, your dietary guidance — embedded into a
+      vector store and handed to the model as context at question time. The model does the
+      reasoning and the phrasing; your documents supply the facts.
+    </p>
+
+    <div class="cards" style="margin-top: 28px">
+      <div class="card">
+        <h3>Grounded, not guessed</h3>
+        <p>Retrieval-augmented generation over a vector store you own. Swap the corpus, change the expertise.</p>
+      </div>
+      <div class="card">
+        <h3>It remembers the thread</h3>
+        <p>Per-conversation memory, so “halve that” and “make it dairy-free” mean what you'd expect.</p>
+      </div>
+      <div class="card">
+        <h3>Services, not a monolith</h3>
+        <p>One repo, independently deployable Spring Boot services, a shared archetype for the next one.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <h2>How it works</h2>
+    <p class="sub">The path a document takes from disk to a grounded answer.</p>
+
+    <ol class="pipeline">
+      <li>
+        <h3>Ingest</h3>
+        <p>Apache Tika reads the source document — PDF today, most formats in principle — at application startup.</p>
+      </li>
+      <li>
+        <h3>Chunk</h3>
+        <p>A token-aware splitter breaks the text into passages small enough to retrieve precisely and large enough to stay coherent.</p>
+      </li>
+      <li>
+        <h3>Embed &amp; store</h3>
+        <p>Each chunk is embedded via OpenAI and written to a Qdrant collection, which the service provisions on first run.</p>
+      </li>
+      <li>
+        <h3>Retrieve</h3>
+        <p>An incoming question becomes a vector query; the nearest passages are pulled back as evidence.</p>
+      </li>
+      <li>
+        <h3>Answer</h3>
+        <p>Retrieved passages plus the conversation history go to the chat model, which returns a structured, typed response.</p>
+      </li>
+    </ol>
+
+    <p class="note" style="margin-top: 26px">
+      <strong>Repository status.</strong> The pipeline above is real and running in <code>chat-service</code>;
+      the meal-specific corpus and the services around it are the work in progress. The service ships
+      with a sample document so you can clone it and get a grounded answer in one command.
+    </p>
+  </div>
+</section>
+
+<section id="services">
+  <div class="wrap">
+    <h2>Services</h2>
+    <p class="sub">What lives in the monorepo today.</p>
+
+    <div class="service">
+      <div class="service-head">
+        <h3>chat-service</h3>
+        <span class="tag">Live</span>
+        <span class="path">/chat-service · Spring Boot 3.4 · Java 17</span>
+      </div>
+      <p style="color: var(--text-dim); font-size: 15px">
+        The conversational core. Loads and indexes the corpus on startup, then serves a single
+        <code>POST /ask</code> endpoint with retrieval and per-conversation memory attached.
+        Pass an <code>X_CONV_ID</code> header to keep separate threads apart; omit it and everything
+        lands in one default conversation.
+      </p>
+    </div>
+
+    <pre style="margin-top: 18px"><code>curl -X POST http://localhost:8080/ask \
+  -H 'Content-Type: application/json' \
+  -H 'X_CONV_ID: dinner-tonight' \
+  -d '{"question": "What can I substitute for buttermilk?"}'
+
+{"answer": "..."}</code></pre>
+
+    <p style="margin-top: 22px; color: var(--text-dim); font-size: 15px">
+      The repository root is itself a <strong>Maven archetype</strong> — the template each new
+      Meal Concierge service is generated from, so the next service starts with the same layout,
+      conventions and build wiring as this one.
+    </p>
+  </div>
+</section>
+
+<section id="stack">
+  <div class="wrap">
+    <h2>Stack</h2>
+    <p class="sub">Deliberately boring infrastructure, so the interesting part stays the retrieval.</p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Layer</th><th>Choice</th><th>Why</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Runtime</td><td>Java 17 · Spring Boot 3.4</td><td>Long-term-support baseline with first-class observability and config.</td></tr>
+          <tr><td>AI orchestration</td><td>Spring AI</td><td>Advisor pipeline composes retrieval, memory and logging without hand-rolled glue.</td></tr>
+          <tr><td>Vector store</td><td>Qdrant</td><td>Fast similarity search, runs locally in Docker, schema created on boot.</td></tr>
+          <tr><td>Models</td><td>OpenAI</td><td>Embeddings and chat behind one provider today; the abstraction allows others.</td></tr>
+          <tr><td>Ingestion</td><td>Apache Tika</td><td>One reader for PDFs, documents and the messy formats recipes actually arrive in.</td></tr>
+          <tr><td>Local infra</td><td>Docker Compose</td><td>Spring Boot starts and stops Qdrant with the app — no separate setup step.</td></tr>
+          <tr><td>Build</td><td>Maven multi-module</td><td>One reactor build; the root doubles as the archetype for new services.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="start">
+  <div class="wrap">
+    <h2>Getting started</h2>
+    <p class="sub">Docker and a JDK 17+ are the only prerequisites — Compose brings up Qdrant for you.</p>
+<pre><code>git clone https://github.com/louisalexander/meal-concierge-monorepo.git
+cd meal-concierge-monorepo/chat-service
+
+export OPENAI_API_KEY=sk-...
+./mvnw spring-boot:run</code></pre>
+    <p style="margin-top: 18px; color: var(--text-dim); font-size: 15px">
+      On startup the service brings up Qdrant, indexes the bundled document, and begins serving
+      <code>POST /ask</code> on port 8080. Point <code>app.resource</code> in
+      <code>application.properties</code> at your own file to change what it knows.
+    </p>
+  </div>
+</section>
+
+<section id="roadmap">
+  <div class="wrap">
+    <h2>Where this is going</h2>
+    <p class="sub">Honest about the line between what runs today and what is planned.</p>
+    <ul class="roadmap">
+      <li class="done">Document ingestion, chunking and embedding at startup</li>
+      <li class="done">Qdrant-backed retrieval wired into the chat pipeline</li>
+      <li class="done">Per-conversation memory and typed responses over <code>POST /ask</code></li>
+      <li class="done">Maven archetype at the root for generating the next service</li>
+      <li class="next">A real meal corpus — recipes, nutrition data, allergen references</li>
+      <li class="next">Citations returned alongside each answer</li>
+      <li class="next">Pantry and preference service, so answers know your kitchen</li>
+      <li class="next">Persistent conversation memory beyond a single process</li>
+      <li class="next">Meal planning and shopping-list generation across a week</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Meal Concierge ·
+    <a href="https://github.com/louisalexander/meal-concierge-monorepo">github.com/louisalexander/meal-concierge-monorepo</a>
+  </div>
+</footer>
+
+</body>
+</html>
